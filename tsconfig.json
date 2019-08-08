@@ -1,0 +1,10 @@
+{
+  "exclude": ["dist", "node_modules", "**/*.test.*"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "jsx": "react",
+    "noImplicitAny": true,
+    "declaration": true,
+    "lib": ["es2015", "dom"]
+  }
+}

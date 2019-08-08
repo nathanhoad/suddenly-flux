@@ -1,0 +1,49 @@
+{
+  "name": "@suddenly/flux",
+  "version": "0.0.1",
+  "description": "An implementation of Flux similar to Redux",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "prepublishOnly": "tsc && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nathanhoad/suddenly-flux.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "immutable"
+  ],
+  "author": "Nathan Hoad <nathan@nathanhoad.net>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nathanhoad/suddenly-flux/issues"
+  },
+  "homepage": "https://github.com/nathanhoad/suddenly-flux#readme",
+  "dependencies": {
+    "immutable": "^4.0.0-rc.12",
+    "object-assign": "^4.1.1",
+    "react": "^16.8.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.17",
+    "@types/object-assign": "^4.0.30",
+    "@types/react": "^16.8.25",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "testRegex": ".*\\.test\\.(ts|tsx)$"
+  }
+}
