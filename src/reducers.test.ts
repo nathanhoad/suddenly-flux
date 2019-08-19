@@ -1,4 +1,5 @@
 import { createState, createReducer, combineReducers } from './reducers';
+import { State } from './types';
 
 describe('Reducers', () => {
   it('can create a basic reducer', () => {
@@ -30,6 +31,28 @@ describe('Reducers', () => {
 
     expect(state.get('isLoading')).toBe(false);
     expect(state.get('value')).toBe('Hello');
+  });
+
+  it('can run a side effect', () => {
+    const initialState = createState({
+      key: 'value'
+    });
+
+    const sideEffect = jest.fn();
+
+    const reducer = createReducer(
+      initialState,
+      {
+        CHANGING_VALUE(state, action) {
+          return state.set('key', 'new value');
+        }
+      },
+      sideEffect
+    );
+
+    reducer(initialState, { type: 'CHANGING_VALUE' });
+
+    expect(sideEffect).toBeCalled();
   });
 
   it('can combine reducers', () => {

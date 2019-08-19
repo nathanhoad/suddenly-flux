@@ -31,8 +31,9 @@ export function combineReducers(reducers: Reducers = {}): Reducer {
  * Create a basic reducer
  * @param initialState
  * @param reducers A dictionary of reducers
+ * @param sideEffect
  */
-export function createReducer(initialState: State, reducers: Reducers): Reducer {
+export function createReducer(initialState: State, reducers: Reducers, sideEffect?: (state: State) => void): Reducer {
   const keys = Object.keys(reducers);
 
   return (state: State = initialState, action?: Action) => {
@@ -43,6 +44,10 @@ export function createReducer(initialState: State, reducers: Reducers): Reducer 
         state = reducers[constant](state, action);
       }
     });
+
+    if (typeof sideEffect === 'function') {
+      sideEffect(state);
+    }
 
     return state;
   };
