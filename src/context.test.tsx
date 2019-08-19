@@ -1,18 +1,22 @@
 import { Store } from './context';
 import { createState } from './reducers';
+import { State, Action } from './types';
 
 describe('Store', () => {
   it('can store state', () => {
-    const store = new Store(createState({ property: 'value' }));
+    function reducer(state: State, action: Action) {
+      if (action.type === 'COUNTING') {
+        return state.update('counter', value => value + 1);
+      }
+      return state;
+    }
 
-    let state = store.getState();
+    const store = new Store(createState({ counter: 1 }), reducer);
 
-    expect(state.get('property')).toBe('value');
+    expect(store.getState().get('counter')).toBe(1);
 
-    state = state.set('other', 'thing');
+    store.dispatch({ type: 'COUNTING' });
 
-    store.mergeState(state);
-
-    expect(store.getState().get('other')).toBe('thing');
+    expect(store.getState().get('counter')).toBe(2);
   });
 });

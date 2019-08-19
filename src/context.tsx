@@ -1,21 +1,55 @@
 import * as React from 'react';
 import * as merge from 'object-assign';
-import { Reducer, State, Action, EventualAction, MapStateToPropsFunction, MapDispatchToPropsFunction } from './types';
+import {
+  Reducer,
+  State,
+  Action,
+  EventualAction,
+  MapStateToPropsFunction,
+  MapDispatchToPropsFunction,
+  ChangeListener
+} from './types';
 
 export class Store {
   state: State;
+  reducer: Reducer;
 
-  constructor(initialState: State) {
+  listeners: ChangeListener[];
+
+  constructor(initialState: State, reducer: Reducer) {
     this.state = initialState;
+    this.reducer = reducer;
+
+    this.listeners = [];
+  }
+
+  public addListener(handler: ChangeListener): void {
+    this.listeners = this.listeners.concat(handler);
+  }
+
+  public removeListener(handler: ChangeListener): void {
+    this.listeners = this.listeners.filter(event => event !== handler);
+  }
+
+  onStateChanged() {
+    this.listeners.forEach(listener => {
+      listener(this.getState());
+    });
   }
 
   public getState(): State {
     return this.state;
   }
 
-  public mergeState(state: State): State {
-    this.state = this.state.merge(state);
-    return this.getState();
+  public dispatch(action: Action | EventualAction) {
+    // If the action is a function then run it first
+    if (typeof action === 'function') {
+      this.dispatch(action(this.getState.bind(this), this.dispatch.bind(this)));
+    } else if (typeof action !== 'undefined') {
+      // Otherwise we should have something we can give to the reducer
+      this.state = this.state.merge(this.reducer(this.getState(), action as Action));
+      this.onStateChanged();
+    }
   }
 }
 
@@ -24,33 +58,34 @@ let store: Store;
 const Context = React.createContext({});
 
 export type ProviderProps = {
-  reducer: Reducer;
+  store?: Store;
+  reducer?: Reducer;
   children: any;
 };
 
 export function Provider(props: ProviderProps) {
+  if (!props.store && !props.reducer) {
+    throw new Error('You need to provide either a Store or a reducer function');
+  }
+
   if (!store) {
-    store = new Store(props.reducer());
+    store = props.store || new Store(props.reducer(), props.reducer);
   }
 
   const [providedState, setProvidedState] = React.useState(store.getState());
 
-  function dispatch(action: Action | EventualAction): void {
-    // If the action is a function then run it first
-    if (typeof action === 'function') {
-      dispatch(action(store.getState.bind(store), dispatch));
-    } else if (typeof action !== 'undefined') {
-      // Otherwise we should have something we can give to the reducer
-      store.mergeState(props.reducer(store.getState(), action as Action));
-      setProvidedState(store.getState());
-    }
-  }
+  React.useEffect(() => {
+    store.addListener(setProvidedState);
+    return () => {
+      store.removeListener(setProvidedState);
+    };
+  }, [providedState]);
 
   return (
     <Context.Provider
       value={{
         state: providedState,
-        dispatch
+        dispatch: store.dispatch.bind(store)
       }}>
       {props.children}
     </Context.Provider>

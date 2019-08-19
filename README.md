@@ -66,24 +66,35 @@ In this example, the store would look something like:
 
 You can also pass a `sideEffect` function as the second argument to `combineReducers`. This function will be called with the updated state once all reducers are run.
 
-You can then use this new reducer as `Context` state in a `Provider`.
+You can then use this new reducer as context state in a `Provider`.
 
 ### Context
 
-Use the `Provider` at the top level of your app to provide state.
+First, create a store:
 
-In your `App.tsx` for example:
+```ts
+import { Store, createState } from '@suddenly/flux';
+import reducer from './reducers';
+
+const initialState = createState({
+  ...
+});
+
+export new Store(initialState, reducer);
+```
+
+Then create a `Provider` at the top level of your app to provide state.
+
+For example, in your `App.tsx`:
 
 ```tsx
 import { Provider } from '@suddenly/flux';
-import reducer from '../reducers';
+import store from '../store';
 
 export default (props: Props) => {
-  return <Provider reducer={reducer}>...</Provider>;
+  return <Provider store={store}>...</Provider>;
 };
 ```
-
-This will automatically create a store and establish the initial state from the reducer.
 
 Then you can use `connect` to create a HOC that maps state and dispatch calls into the wrapped component.
 
@@ -126,3 +137,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemList);
 ```
+
+## Contributors
+
+- Nathan Hoad - [nathan@nathanhoad.net](mailto:nathan@nathanhoad.net)
