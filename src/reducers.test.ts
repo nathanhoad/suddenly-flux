@@ -50,9 +50,8 @@ describe('Reducers', () => {
       sideEffect
     );
 
-    reducer(initialState, { type: 'CHANGING_VALUE' });
-
-    expect(sideEffect).toBeCalled();
+    const state = reducer(initialState, { type: 'CHANGING_VALUE' });
+    expect(sideEffect).toBeCalledWith(state);
   });
 
   it('can combine reducers', () => {
@@ -103,5 +102,42 @@ describe('Reducers', () => {
 
     expect(state.getIn(['first', 'value'])).toBe('BOTH');
     expect(state.getIn(['second', 'value'])).toBe('BOTH');
+  });
+
+  it('can run a side effect with combined reducers', () => {
+    const initialFirstState = createState({
+      value: null
+    });
+
+    const first = createReducer(initialFirstState, {
+      FIRST_VALUE(state, action) {
+        return state.set('value', action.payload);
+      },
+      BOTH_VALUE(state, action) {
+        return state.set('value', action.payload);
+      }
+    });
+
+    const initialSecondState = createState({
+      value: null
+    });
+
+    const second = createReducer(initialSecondState, {
+      SECOND_VALUE(state, action) {
+        return state.set('value', action.payload);
+      },
+      BOTH_VALUE(state, action) {
+        return state.set('value', action.payload);
+      }
+    });
+
+    const sideEffect = jest.fn();
+
+    const reducer = combineReducers({ first, second }, sideEffect);
+
+    let state = reducer();
+    state = reducer(state, { type: 'FIRST_VALUE', payload: 'First' });
+
+    expect(sideEffect).toBeCalledWith(state);
   });
 });

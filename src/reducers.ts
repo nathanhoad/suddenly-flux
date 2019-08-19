@@ -12,8 +12,9 @@ export function createState(object: any): State {
 /**
  * Combine reducers into a tree where the result state mirrors the tree structure
  * @param reducers A dictionary of reducers
+ * @param sideEffect An optional side effect to run afterwards
  */
-export function combineReducers(reducers: Reducers = {}): Reducer {
+export function combineReducers(reducers: Reducers = {}, sideEffect?: (state: State) => void): Reducer {
   const keys = Object.keys(reducers);
 
   return (state?: State, action?: Action) => {
@@ -23,6 +24,10 @@ export function combineReducers(reducers: Reducers = {}): Reducer {
       state = state.set(key, reducers[key](state.get(key), action));
     });
 
+    if (typeof sideEffect === 'function') {
+      sideEffect(state);
+    }
+
     return state;
   };
 }
@@ -31,7 +36,7 @@ export function combineReducers(reducers: Reducers = {}): Reducer {
  * Create a basic reducer
  * @param initialState
  * @param reducers A dictionary of reducers
- * @param sideEffect
+ * @param sideEffect An optional side effect to run afterwards
  */
 export function createReducer(initialState: State, reducers: Reducers, sideEffect?: (state: State) => void): Reducer {
   const keys = Object.keys(reducers);

@@ -32,6 +32,8 @@ export default createReducer(initialState, {
 });
 ```
 
+You can also pass an optional `sideEffect` function as the third argument to `createReducer` that will be called (passing the updated state) once all reducer functions are called.
+
 And then you might combine your reducers:
 
 ```ts
@@ -61,6 +63,8 @@ In this example, the store would look something like:
   }
 }
 ```
+
+You can also pass a `sideEffect` function as the second argument to `combineReducers`. This function will be called with the updated state once all reducers are run.
 
 You can then use this new reducer as `Context` state in a `Provider`.
 
