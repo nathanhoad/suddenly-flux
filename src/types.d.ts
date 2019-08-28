@@ -13,7 +13,7 @@ export type Action = {
   payload?: any;
 };
 
-export type EventualAction = (getState?: () => State, dispatch?: Dispatch) => Action;
+export type EventualAction = (dispatch: Dispatch, getState?: () => State) => void;
 
 export type Dispatch = (action: Action | EventualAction) => void;
 

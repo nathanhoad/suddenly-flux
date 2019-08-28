@@ -44,7 +44,7 @@ export class Store {
   public dispatch(action: Action | EventualAction) {
     // If the action is a function then run it first
     if (typeof action === 'function') {
-      this.dispatch(action(this.getState.bind(this), this.dispatch.bind(this)));
+      action(this.dispatch.bind(this), this.getState.bind(this));
     } else if (typeof action !== 'undefined') {
       // Otherwise we should have something we can give to the reducer
       this.state = this.state.merge(this.reducer(this.getState(), action as Action));

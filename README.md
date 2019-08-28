@@ -4,6 +4,39 @@ A simple implementation of Flux that is loosely based on Redux.
 
 ## Usage
 
+### Actions
+
+You can pass actions directly or return a function that will dispatch actions asynchronously.
+
+When using a function you get `dispatch` and `getState` functions as arguments.
+
+```ts
+const ItemActions = {
+  LOADING_ITEMS: 'LOADING_ITEMS',
+  LOADED_ITEMS: 'LAODED_ITEMS',
+
+  loadedItems(items) {
+    // Return a literal action to dispatch it
+    return { type: ItemActions.LOADED_ITEMS, payload: items };
+  }
+
+  loadItems() {
+    // Return a function to defer dispatching actions
+    return (dispatch, getState) => {
+      // getState() returns the current base state
+      if (getState().getIn(['Items', 'isLoading'])) return;
+
+      dispatch({ type: ItemActions.LOADING_ITEMS });
+
+      fetch('/items').then(items => {
+        // You can dispatch other actions
+        dispatch(ItemActions.loadedItems(items));
+      });
+    }
+  }
+}
+```
+
 ### Reducers
 
 Reducers work similar to Redux but utilise [Immutable.js](https://immutable-js.github.io/immutable-js/docs/#/) by default.

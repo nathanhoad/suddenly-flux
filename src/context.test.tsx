@@ -1,6 +1,6 @@
 import { Store } from './context';
 import { createState } from './reducers';
-import { State, Action } from './types';
+import { State, Action, Dispatch } from './types';
 
 describe('Store', () => {
   it('can store state', () => {
@@ -12,12 +12,21 @@ describe('Store', () => {
     }
 
     const store = new Store(createState({ counter: 1 }), reducer);
-
     expect(store.getState().get('counter')).toBe(1);
 
     store.dispatch({ type: 'COUNTING' });
-
     expect(store.getState().get('counter')).toBe(2);
+
+    function action() {
+      return (dispatch: Dispatch, getState: () => State) => {
+        expect(getState().get('counter')).toBe(2);
+        dispatch({ type: 'COUNTING' });
+        expect(getState().get('counter')).toBe(3);
+      };
+    }
+
+    store.dispatch(action());
+    expect(store.getState().get('counter')).toBe(3);
   });
 
   it('defers to the reducer when given null intial state', () => {
@@ -29,11 +38,9 @@ describe('Store', () => {
     }
 
     const store = new Store(null, reducer);
-
     expect(store.getState().get('counter')).toBe(1);
 
     store.dispatch({ type: 'COUNTING' });
-
     expect(store.getState().get('counter')).toBe(2);
   });
 });
