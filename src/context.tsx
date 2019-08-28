@@ -17,7 +17,7 @@ export class Store {
   listeners: ChangeListener[];
 
   constructor(initialState: State, reducer: Reducer) {
-    this.state = initialState;
+    this.state = initialState !== null ? initialState : reducer();
     this.reducer = reducer;
 
     this.listeners = [];
