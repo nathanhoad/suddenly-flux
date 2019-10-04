@@ -74,17 +74,17 @@ export function Provider(props: ProviderProps) {
 
   const [providedState, setProvidedState] = React.useState(store.getState());
 
-  // Add the listener initially
-  // The Effect below only starts listening after everything is rendered
-  // but we might need to know about stuff before then
-  store.addListener(setProvidedState);
-
   React.useEffect(() => {
     store.addListener(setProvidedState);
     return () => {
       store.removeListener(setProvidedState);
     };
   }, [providedState]);
+
+  // Add the listener initially
+  // The Effect above only starts listening after everything is rendered
+  // but we might need to know about stuff before then
+  store.addListener(setProvidedState);
 
   return (
     <Context.Provider
