@@ -1,12 +1,20 @@
-import { fromJS } from 'immutable';
-import { State, Action, Reducer, Reducers } from './types';
+import { fromJS, Map } from "immutable";
+import { State, Action, Reducer, Reducers } from "./types";
 
 /**
  * Convert a JS object to an Immutable.Map
- * @param object Any simple JS object
+ * @param objectOrArray Any simple JS object
+ * @param keyBy If given an array, use this field for keying to a Map
  */
-export function createState(object: any): State {
-  return fromJS(object);
+export function createState(objectOrArray: Array<any> | object, keyBy: string = null): State {
+  if (!(objectOrArray instanceof Array) || keyBy === null) return fromJS(objectOrArray);
+
+  let map: any = {};
+  (objectOrArray as Array<any>).forEach((item: any) => {
+    map[item[keyBy]] = item;
+  });
+
+  return fromJS(map);
 }
 
 /**
@@ -24,7 +32,7 @@ export function combineReducers(reducers: Reducers = {}, sideEffect?: (state: St
       state = state.set(key, reducers[key](state.get(key), action));
     });
 
-    if (typeof sideEffect === 'function') {
+    if (typeof sideEffect === "function") {
       sideEffect(state);
     }
 
@@ -50,7 +58,7 @@ export function createReducer(initialState: State, reducers: Reducers, sideEffec
       }
     });
 
-    if (typeof sideEffect === 'function') {
+    if (typeof sideEffect === "function") {
       sideEffect(state);
     }
 
