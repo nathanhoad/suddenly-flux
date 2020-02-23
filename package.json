@@ -1,6 +1,6 @@
 {
   "name": "@suddenly/flux",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "An implementation of Flux similar to Redux",
   "main": "dist/index.js",
   "scripts": {
