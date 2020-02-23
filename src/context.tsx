@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as merge from 'object-assign';
+import * as React from "react";
+import * as merge from "object-assign";
 import {
   Reducer,
   State,
@@ -8,7 +8,7 @@ import {
   MapStateToPropsFunction,
   MapDispatchToPropsFunction,
   ChangeListener
-} from './types';
+} from "./types";
 
 export class Store {
   state: State;
@@ -43,9 +43,9 @@ export class Store {
 
   public dispatch(action: Action | EventualAction) {
     // If the action is a function then run it first
-    if (typeof action === 'function') {
+    if (typeof action === "function") {
       action(this.dispatch.bind(this), this.getState.bind(this));
-    } else if (typeof action !== 'undefined') {
+    } else if (typeof action !== "undefined") {
       // Otherwise we should have something we can give to the reducer
       this.state = this.state.merge(this.reducer(this.getState(), action as Action));
       this.onStateChanged();
@@ -55,7 +55,7 @@ export class Store {
 
 let store: Store;
 
-const Context = React.createContext({});
+export const Context = React.createContext({});
 
 export type ProviderProps = {
   store?: Store;
@@ -65,7 +65,7 @@ export type ProviderProps = {
 
 export function Provider(props: ProviderProps) {
   if (!props.store && !props.reducer) {
-    throw new Error('You need to provide either a Store or a reducer function');
+    throw new Error("You need to provide either a Store or a reducer function");
   }
 
   if (!store) {
@@ -112,7 +112,7 @@ export function connect(mapStateToProps?: MapStateToPropsFunction, mapDispatchTo
             if (mapStateToProps) {
               mappedState = mapStateToProps(context.state, props);
               // Check for a memoized selector
-              if (typeof mappedState === 'function') {
+              if (typeof mappedState === "function") {
                 mappedState = mappedState(context.state, props);
               }
             }

@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map } from "immutable";
 
 export type Dictionary<T> = {
   [key: string]: T;
@@ -24,4 +24,6 @@ export type Reducers = {
 };
 
 export type MapStateToPropsFunction = (state: State, props?: any) => Dictionary<any> | MapStateToPropsFunction;
-export type MapDispatchToPropsFunction = (dispatch: Action, props?: any) => void;
+export type MapDispatchToPropsFunction = (dispatch: Dispatch, props?: any) => Dictionary<any>;
+
+export type SelectorFunction = (state: State) => any;

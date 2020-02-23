@@ -1,6 +1,6 @@
-export { createState, createReducer, combineReducers } from './reducers';
-export { Store, Provider, connect } from './context';
-export { queryString } from './actions';
+export { createState, createReducer, combineReducers } from "./reducers";
+export { Context, Store, Provider, connect } from "./context";
+export { queryString } from "./actions";
 
 export {
   ChangeListener,
@@ -11,5 +11,6 @@ export {
   Reducer,
   Reducers,
   MapStateToPropsFunction,
-  MapDispatchToPropsFunction
-} from './types';
+  MapDispatchToPropsFunction,
+  SelectorFunction
+} from "./types";
